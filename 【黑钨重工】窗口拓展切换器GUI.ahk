@@ -13,7 +13,7 @@ if not A_IsAdmin
     DllCall(ShellExecute, uint, 0, str, "RunAs", str, A_ScriptFullPath, str, params , str, A_WorkingDir, int, 1)
   Else
     DllCall(ShellExecute, uint, 0, str, "RunAs", str, A_AhkPath, str, """" . A_ScriptFullPath . """" . A_Space . params, str, A_WorkingDir, int, 1)
-  Exit
+  ExitApp
 }
 */
 
@@ -63,7 +63,7 @@ FileRead, 文件内容, %A_ScriptDir%\更新日志.txt
 StringReplace, 文件内容, 文件内容, `n, `n, UseErrorLevel 
 更新日志行数:=ErrorLevel + 3, text:=""
 
-autostartLnk:=A_StartupCommon . "\FurtoryWindowsSwitchAndActive.lnk"
+autostartLnk:=A_StartupCommon . "\AutoWindowsSwitchAndActive.lnk"
 IfExist, % autostartLnk
 {
   autostart:=1
@@ -95,7 +95,6 @@ IfNotExist, %A_ScriptDir%\Settings.ini ;如果配置文件不存在则新建
   WXL:=5
   WYU:=10
   WaitTime:=5
-  autostart:=0
   IniWrite, %WXL%, Settings.ini, Settings, 激活窗口左右判断宽度
   IniWrite, %WYU%, Settings.ini, Settings, 设置拓展窗口上方判断宽度
   IniWrite, %WaitTime%, Settings.ini, Settings, 切换窗口等待确定防误触发时间
@@ -117,7 +116,7 @@ loop
 		{
 			loop
 			{
-				ToolTip ,修改保存后关闭记事本会自动读取并应用设置, 7, -25, 3
+				ToolTip ,修改保存后关闭记事本会自动读取并应用设置
 				Sleep 50
 				IfWinNotActive, ahk_class Notepad
 				{
@@ -185,6 +184,7 @@ GuiEscape:
 GuiClose:
 Gui, Destroy
 return
+
 开机自启:
 Critical, On
 if (autostart=1)
@@ -339,7 +339,6 @@ KeyWait, LWin
 loop
 {
   Sleep 10
-  ToolTip 1
   if GetKeyState("LWin", "P")
   {
     Suspend, Toggle
@@ -1108,7 +1107,7 @@ ToolTip
 Critical, Off
 return
 
-$^space:: ;输入空格
+$!space:: ;输入空格
 Critical, On
 Send {space Down}
 loop
